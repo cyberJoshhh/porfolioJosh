@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+/*
+ * Dark portfolio theme (see DESIGN.md): near-black surfaces, one accent accent,
+ * uppercase sans headings with an italic serif accent phrase, and outlined
+ * accent asterisks as the recurring mark.
+ */
+@theme {
+  --color-night: #141414;
+  --color-coal: #1e1e1e;
+  --color-smoke: #262626;
+  --color-line: #2e2e2e;
+  --color-snow: #f4f4f2;
+  --color-ash: #a3a3a3;
+  --color-accent: #ffb020;
+  --color-accent-deep: #e89a0c;
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+
+  --container-page: 72rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-night);
+  color: var(--color-snow);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* Anchors land below the fixed bar. */
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-night);
+}
+
+/* Keyboard focus is always visible. */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* Caution tape: flat accent with thin hazard stripes along both edges. */
+  .tape {
+    /* Positioned by utilities (absolute); the stripes below hang off it. */
+    padding-block: 0.95rem;
+    color: var(--color-night);
+    background: var(--color-accent);
+  }
+
+  .tape::before,
+  .tape::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--color-night) 0 9px,
+      var(--color-accent) 9px 18px
+    );
+  }
+
+  .tape::before {
+    top: 0;
+  }
+
+  .tape::after {
+    bottom: 0;
+  }
+
+  /* Section and hero headings: uppercase sans. */
+  .heading {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  /* The italic serif phrase inside a heading. */
+  .accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* The small label above a section heading. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+/*
+ * Background textures. Faint on purpose: text always wins.
+ * .bg-grid fades out from its centre; .bg-dots is an even dot field.
+ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+.bg-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.08) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Small asterisks that fade in and out, each on its own delay (--d). */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(30deg);
+  }
+}
+
+.twinkle {
+  animation: twinkle 4s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* The accent band of service names scrolls sideways forever. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  animation: marquee 32s linear infinite;
+}
+
+/* The circular badge in the hero turns slowly. */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-slow {
+  animation: spin-slow 18s linear infinite;
+}
+
+/* Page-load moment: the hero rises in, staggered by --i. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
